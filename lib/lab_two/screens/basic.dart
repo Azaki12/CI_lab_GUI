@@ -36,7 +36,7 @@ class _BasicScreenState extends State<BasicScreen> {
                               cubit.openPort(address);
                               print(cubit.port.isOpen);
                             },
-                            child: Text(
+                            child: const Text(
                               'Conncect',
                             ),
                           ),

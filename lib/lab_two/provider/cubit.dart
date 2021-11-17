@@ -25,7 +25,7 @@ class AppCubit extends Cubit<AppStates> {
     print(availablePorts);
   }
 
-  String readPort() {
+  readPort() {
     final reader = SerialPortReader(port, timeout: 2000);
     String tempData = '';
     reader.stream.listen((data) {

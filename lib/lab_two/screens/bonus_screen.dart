@@ -11,7 +11,7 @@ class BonusScreen extends StatefulWidget {
 }
 
 class _BonusScreenState extends State<BonusScreen> {
-  var speed = 50;
+  var speed = 20;
   String recievedData = '';
 
   @override
@@ -38,7 +38,7 @@ class _BonusScreenState extends State<BonusScreen> {
                           },
                           child: Text('Read Data'),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         Row(
@@ -55,15 +55,15 @@ class _BonusScreenState extends State<BonusScreen> {
 
                                 setState(() {});
                               },
-                              child: Text(
+                              child: const Text(
                                 '+',
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 20,
                             ),
                             Text('${cubit.recievedData} Degrees'),
-                            SizedBox(
+                            const SizedBox(
                               width: 20,
                             ),
                             ElevatedButton(
@@ -83,7 +83,7 @@ class _BonusScreenState extends State<BonusScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 50,
                         ),
                         Text('$speed% of Motor Speed'),
@@ -91,7 +91,7 @@ class _BonusScreenState extends State<BonusScreen> {
                     ),
                   ),
                 )
-              : Center(child: Text('No Ports Detected')),
+              : Center(child: const Text('No Ports Detected')),
         );
       },
     );
