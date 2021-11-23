@@ -13,3 +13,5 @@ class AppChangeIndex extends AppStates {}
 class AppReadError extends AppStates {}
 
 class AppchangeDrawer extends AppStates {}
+
+class AppSetSineWaveOn extends AppStates {}

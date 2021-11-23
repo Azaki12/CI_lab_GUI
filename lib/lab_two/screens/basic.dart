@@ -112,8 +112,8 @@ class _BasicScreenState extends State<BasicScreen> {
                             children: [
                               ElevatedButton(
                                 onPressed: () {
-                                  cubit.port
-                                      .write(Uint8List.fromList("1".codeUnits));
+                                  cubit.port.write(
+                                      Uint8List.fromList("1".codeUnits));
                                   print(Uint8List.fromList("1".codeUnits));
                                 },
                                 child: Text('On'),

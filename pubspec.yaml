@@ -40,6 +40,9 @@ dependencies:
     git: "https://github.com/Mohamed-7018/Flutter-flurry-drawer-package"
   bloc: ^7.2.1
   flutter_bloc: ^7.3.3
+  flip_card: ^0.6.0
+  lottie: ^1.2.1
+  flutter_swiper: ^1.1.6
 
 dev_dependencies:
   flutter_test:
@@ -64,6 +67,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+    - assets/lotties/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

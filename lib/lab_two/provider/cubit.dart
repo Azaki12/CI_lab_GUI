@@ -18,6 +18,29 @@ class AppCubit extends Cubit<AppStates> {
   var availablePorts = [];
   var port;
   String recievedData = '';
+  List<bool> animations = [];
+
+  animationInit() {
+    for (int i = 0; i < 4; i++) {
+      animations.add(false);
+    }
+  }
+
+  bool getAnimation(index) {
+    return animations[index];
+  }
+
+  void setAnimation(index, value) {
+    animations[index] = value;
+    for (int i = 0; i < animations.length; i++) {
+      if (i == index) {
+        animations[index] = value;
+      } else {
+        animations[i] = false;
+      }
+    }
+    emit(AppSetSineWaveOn());
+  }
 
   void initPorts() {
     availablePorts = SerialPort.availablePorts;
@@ -33,7 +56,9 @@ class AppCubit extends Cubit<AppStates> {
       //recievedData = '';
 
       String checkData = AsciiCodec().decode(data).toString();
-      if (checkData == '\$') {
+
+      /// todo revert to normal reading with $
+      if (checkData == '>') {
         recievedData = tempData;
         tempData = '';
         print(tempData);
@@ -41,6 +66,9 @@ class AppCubit extends Cubit<AppStates> {
       } else {
         tempData += checkData;
       }
+
+      // recievedData += checkData;
+      // print(checkData);
       emit(AppReadSuccess());
     }).onDone(() {});
     print(recievedData);

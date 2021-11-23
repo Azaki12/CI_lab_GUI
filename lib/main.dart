@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gui_ci_embedded/home.dart';
+import 'package:gui_ci_embedded/lab_three/provider/cubit.dart';
 import 'package:gui_ci_embedded/lab_two/provider/drawer_cubit.dart';
 import 'package:gui_ci_embedded/lab_two/provider/states.dart';
 
@@ -25,6 +26,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => DrawerCubit()..pageInit(),
+        ),
+        BlocProvider(
+          create: (context) => Lab3AppCubit(),
         ),
       ],
       child: BlocConsumer<DrawerCubit, AppStates>(
