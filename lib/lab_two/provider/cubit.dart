@@ -1,8 +1,12 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
+import 'package:gui_ci_embedded/consts/constants.dart';
 import 'package:gui_ci_embedded/lab_two/provider/states.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class AppCubit extends Cubit<AppStates> {
   AppCubit() : super(Appinit());
@@ -16,14 +20,125 @@ class AppCubit extends Cubit<AppStates> {
     'Bonus',
   ];
   var availablePorts = [];
-  var port;
+  SerialPort port;
   String recievedData = '';
   List<bool> animations = [];
+  List<ChartData> oscilloscopeData = [];
+  bool analyzer = true;
+  int logicSample = 1;
+
+  final List<ChartSampleData> logicAnalyzerData = [];
+
+  List<StepLineSeries<ChartSampleData, num>> getDefaultStepLineSeries() {
+    List<StepLineSeries<ChartSampleData, num>> data = [
+      StepLineSeries<ChartSampleData, num>(
+        color: Colors.red,
+        dataSource: logicAnalyzerData,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
+        yValueMapper: (ChartSampleData sales, _) => sales.y,
+      ),
+      StepLineSeries<ChartSampleData, num>(
+        dataSource: logicAnalyzerData,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
+        yValueMapper: (ChartSampleData sales, _) => sales.secondSeriesYValue,
+        name: 'Non-Renewable',
+      ),
+      StepLineSeries<ChartSampleData, num>(
+        dataSource: logicAnalyzerData,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
+        yValueMapper: (ChartSampleData sales, _) => sales.thirdSeriesYValue,
+        name: 'Non-Renewable',
+      ),
+      StepLineSeries<ChartSampleData, num>(
+        dataSource: logicAnalyzerData,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
+        yValueMapper: (ChartSampleData sales, _) => sales.fourthSeriesYValue,
+        name: 'Non-Renewable',
+      ),
+      StepLineSeries<ChartSampleData, num>(
+        dataSource: logicAnalyzerData,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
+        yValueMapper: (ChartSampleData sales, _) => sales.fifthSeriesYValue,
+        name: 'Non-Renewable',
+      ),
+      StepLineSeries<ChartSampleData, num>(
+        dataSource: logicAnalyzerData,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
+        yValueMapper: (ChartSampleData sales, _) => sales.sixthSeriesYValue,
+        name: 'Non-Renewable',
+      ),
+      StepLineSeries<ChartSampleData, num>(
+        dataSource: logicAnalyzerData,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
+        yValueMapper: (ChartSampleData sales, _) => sales.seventhSeriesYValue,
+        name: 'Non-Renewable',
+      ),
+      StepLineSeries<ChartSampleData, num>(
+        dataSource: logicAnalyzerData,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
+        yValueMapper: (ChartSampleData sales, _) => sales.eightsSeriesYValue,
+        name: 'Non-Renewable',
+      ),
+    ];
+    //emit(AppLogicAnalyzerSuccess());
+    return data;
+  }
+
+  List<LineSeries<ChartData, num>> getDefaultLineSeries() {
+    List<LineSeries<ChartData, num>> data = [
+      LineSeries<ChartData, num>(
+        animationDuration: 2500,
+        dataSource: oscilloscopeData,
+        xValueMapper: (ChartData sales, _) => sales.x,
+        yValueMapper: (ChartData sales, _) => sales.y,
+        width: 2,
+      ),
+    ];
+    //emit(AppOscilloscopeSuccess());
+    return data;
+  }
+
+  void changeAnalyzerOscilloscope() {
+    analyzer = !analyzer;
+    emit(AppChangeScreen());
+  }
+
+  void setOscilloscope(String data) {
+    oscilloscopeData.add(
+      ChartData(
+        x: (logicSample++).toDouble(),
+        y: double.parse(data),
+      ),
+    );
+    emit(AppOscilloscopeSuccess());
+  }
+
+  void setLogicAnalyzer(String data) {
+    logicAnalyzerData.add(
+      ChartSampleData(
+        x: logicSample++,
+        y: int.parse(data[0]) == 0 ? 14 : 15,
+        secondSeriesYValue: int.parse(data[1]) == 0 ? 12 : 13,
+        thirdSeriesYValue: int.parse(data[2]) == 0 ? 10 : 11,
+        fourthSeriesYValue: int.parse(data[3]) == 0 ? 8 : 9,
+        fifthSeriesYValue: int.parse(data[4]) == 0 ? 6 : 7,
+        sixthSeriesYValue: int.parse(data[5]) == 0 ? 4 : 5,
+        seventhSeriesYValue: int.parse(data[6]) == 0 ? 2 : 3,
+        eightsSeriesYValue: int.parse(data[7]) == 0 ? 0 : 1,
+      ),
+    );
+    emit(AppLogicAddSuccess());
+  }
 
   animationInit() {
     for (int i = 0; i < 4; i++) {
       animations.add(false);
     }
+  }
+
+  void write(String value) {
+    port.write(Uint8List.fromList(value.codeUnits));
+    emit(AppWriteSuccessful());
   }
 
   bool getAnimation(index) {
@@ -39,7 +154,7 @@ class AppCubit extends Cubit<AppStates> {
         animations[i] = false;
       }
     }
-    emit(AppSetSineWaveOn());
+    emit(AppSetWaveOn());
   }
 
   void initPorts() {
@@ -52,27 +167,23 @@ class AppCubit extends Cubit<AppStates> {
     final reader = SerialPortReader(port, timeout: 2000);
     String tempData = '';
     reader.stream.listen((data) {
-      //print(data.toString());
-      //recievedData = '';
-
       String checkData = AsciiCodec().decode(data).toString();
 
       /// todo revert to normal reading with $
-      if (checkData == '>') {
+      if (checkData == '_') {
         recievedData = tempData;
         tempData = '';
-        print(tempData);
         print('done');
+        analyzer
+            ? setLogicAnalyzer(recievedData)
+            : setOscilloscope(recievedData);
       } else {
         tempData += checkData;
       }
 
-      // recievedData += checkData;
-      // print(checkData);
       emit(AppReadSuccess());
-    }).onDone(() {});
-    print(recievedData);
-    print('here');
+      print(recievedData);
+    });
   }
 
   setRecievedData(String value) {

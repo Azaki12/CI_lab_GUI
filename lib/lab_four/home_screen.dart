@@ -18,6 +18,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   List<Widget> cards = [];
   double amplitudeValue = 0.5;
   double frequencyValue = 0.5;
+  String packet = '';
   final List<String> cardsTitles = [
     'Sine Wave',
     'Triangle Wave',
@@ -128,6 +129,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             onChanged: (value) {
                               amplitudeValue = value;
                               setState(() {});
+                              if (cubit.animations[0]) {
+                                packet =
+                                    '@0${(amplitudeValue * 255).toInt()}${(frequencyValue * 255).toInt()};';
+                              }
+                              if (cubit.animations[1]) {
+                                packet =
+                                    '@1${(amplitudeValue * 255).toInt()}${(frequencyValue * 255).toInt()};';
+                              }
+                              if (cubit.animations[2]) {
+                                packet =
+                                    '@2${(amplitudeValue * 255).toInt()}${(frequencyValue * 255).toInt()};';
+                              }
+                              if (cubit.animations[3]) {
+                                packet =
+                                    '@3${(amplitudeValue * 255).toInt()}${(frequencyValue * 255).toInt()};';
+                              }
+                              cubit.write(packet);
                               print(value);
                             },
                           ),
@@ -175,6 +193,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             onChanged: (value) {
                               frequencyValue = value;
                               setState(() {});
+                              if (cubit.animations[0]) {
+                                packet =
+                                    '@0${(amplitudeValue * 255).toInt()}${(frequencyValue * 255).toInt()};';
+                              }
+                              if (cubit.animations[1]) {
+                                packet =
+                                    '@1${(amplitudeValue * 255).toInt()}${(frequencyValue * 255).toInt()};';
+                              }
+                              if (cubit.animations[2]) {
+                                packet =
+                                    '@2${(amplitudeValue * 255).toInt()}${(frequencyValue * 255).toInt()};';
+                              }
+                              if (cubit.animations[3]) {
+                                packet =
+                                    '@3${(amplitudeValue * 255).toInt()}${(frequencyValue * 255).toInt()};';
+                              }
+                              cubit.write(packet);
                               print(value);
                             },
                           ),
@@ -201,21 +236,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         case 0:
                           setState(() {});
                           cubit.setAnimation(0, true);
-
+                          packet =
+                              '@0${(amplitudeValue * 255).toInt()}${(frequencyValue * 255).toInt()};';
+                          cubit.write(packet);
                           break;
                         case 1:
                           setState(() {});
                           cubit.setAnimation(1, true);
-
+                          packet =
+                              '@1${(amplitudeValue * 255).toInt()}${(frequencyValue * 255).toInt()};';
+                          cubit.write(packet);
                           break;
                         case 2:
                           setState(() {});
 
                           cubit.setAnimation(2, true);
+                          packet =
+                              '@2${(amplitudeValue * 255).toInt()}${(frequencyValue * 255).toInt()};';
+                          cubit.write(packet);
                           break;
                         case 3:
                           setState(() {});
                           cubit.setAnimation(3, true);
+                          packet =
+                              '@3${(amplitudeValue * 255).toInt()}${(frequencyValue * 255).toInt()};';
+                          cubit.write(packet);
                           break;
                         default:
                       }

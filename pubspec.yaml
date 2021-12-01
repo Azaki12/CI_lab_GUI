@@ -43,6 +43,7 @@ dependencies:
   flip_card: ^0.6.0
   lottie: ^1.2.1
   flutter_swiper: ^1.1.6
+  syncfusion_flutter_charts: ^19.3.56
 
 dev_dependencies:
   flutter_test:
