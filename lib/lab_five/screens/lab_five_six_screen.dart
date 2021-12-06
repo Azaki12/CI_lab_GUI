@@ -24,13 +24,15 @@ class LabFiveSixScreen extends StatelessWidget {
               Expanded(
                 child: SfCartesianChart(
                   primaryXAxis: NumericAxis(
-                    interval: 1,
+                    interval: 1000,
+                    autoScrollingMode: AutoScrollingMode.start,
                     title: AxisTitle(
                       text: 'Samples',
                       textStyle: TextStyle(
                         color: Colors.white,
                       ),
                     ),
+                    enableAutoIntervalOnZooming: true,
                   ),
                   primaryYAxis: NumericAxis(
                     interval: 1,
@@ -41,6 +43,7 @@ class LabFiveSixScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  enableAxisAnimation: true,
                   series: cubit.analyzer
                       ? cubit.getDefaultStepLineSeries()
                       : cubit.getDefaultLineSeries(),

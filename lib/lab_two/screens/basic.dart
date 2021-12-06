@@ -76,6 +76,7 @@ class _BasicScreenState extends State<BasicScreen> {
                               final readerBasic =
                                   SerialPortReader(cubit.port, timeout: 2000);
                               readerBasic.stream.listen((data) {
+                                print(data[0]);
                                 //print(data.toString());
                                 if (close) {
                                   close = false;
@@ -85,7 +86,7 @@ class _BasicScreenState extends State<BasicScreen> {
                                 controller.text =
                                     AsciiCodec().decode(data).toString();
 
-                                print('received: $data');
+                                print('received: ${data[0]}');
                               });
                               print('read complete');
                             },
@@ -112,8 +113,8 @@ class _BasicScreenState extends State<BasicScreen> {
                             children: [
                               ElevatedButton(
                                 onPressed: () {
-                                  cubit.port.write(
-                                      Uint8List.fromList("1".codeUnits));
+                                  cubit.port
+                                      .write(Uint8List.fromList("1".codeUnits));
                                   print(Uint8List.fromList("1".codeUnits));
                                 },
                                 child: Text('On'),

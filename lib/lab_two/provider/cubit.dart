@@ -87,7 +87,7 @@ class AppCubit extends Cubit<AppStates> {
   List<LineSeries<ChartData, num>> getDefaultLineSeries() {
     List<LineSeries<ChartData, num>> data = [
       LineSeries<ChartData, num>(
-        animationDuration: 2500,
+        animationDuration: 1000,
         dataSource: oscilloscopeData,
         xValueMapper: (ChartData sales, _) => sales.x,
         yValueMapper: (ChartData sales, _) => sales.y,
@@ -110,6 +110,10 @@ class AppCubit extends Cubit<AppStates> {
         y: double.parse(data),
       ),
     );
+    // if (logicSample == 430) {
+    //   oscilloscopeData.clear();
+    //   logicSample = 1;
+    // }
     emit(AppOscilloscopeSuccess());
   }
 
@@ -164,25 +168,32 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   readPort() {
-    final reader = SerialPortReader(port, timeout: 2000);
+    final reader = SerialPortReader(port, timeout: 1000);
     String tempData = '';
     reader.stream.listen((data) {
+      //print(data[0]);
+
       String checkData = AsciiCodec().decode(data).toString();
 
       /// todo revert to normal reading with $
-      if (checkData == '_') {
-        recievedData = tempData;
-        tempData = '';
-        print('done');
-        analyzer
-            ? setLogicAnalyzer(recievedData)
-            : setOscilloscope(recievedData);
-      } else {
-        tempData += checkData;
-      }
+      // if (checkData == '_') {
+      //   recievedData = tempData;
+      //   tempData = '';
+      //   print('done');
+      //   analyzer
+      //       ? setLogicAnalyzer(recievedData)
+      //       : setOscilloscope(recievedData);
+      // } else {
+      //   tempData += checkData;
+      // }
 
-      emit(AppReadSuccess());
-      print(recievedData);
+      //print(checkData);
+
+      //print(checkData);
+      //emit(AppReadSuccess());
+      String x = (data[0] / 51).toString();
+      setOscilloscope(x);
+      //print(recievedData);
     });
   }
 
@@ -192,7 +203,7 @@ class AppCubit extends Cubit<AppStates> {
 
   openPort(address) {
     port = SerialPort(address);
-    port.config.baudRate = 9600;
+    port.config.baudRate = 4800;
     port.config.bits = 8;
     port.config.stopBits = 1;
 
